@@ -1,0 +1,11 @@
+﻿using Proyecto_software_6am.Entidades;
+
+namespace Proyecto_software_6am.DAOs.Interfaces
+{
+    public interface ISerieDAO
+    {
+        Task<List<Entidades.Serie>> listarSeries();
+        Task<Boolean> guardarSeries(Serie serie);
+        Task<Boolean> actualizarSeries(Serie serie);
+    }
+}

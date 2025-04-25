@@ -1,0 +1,11 @@
+﻿using Proyecto_software_6am.Entidades;
+
+namespace Proyecto_software_6am.Servicio.Interfaces
+{
+    public interface IPeliculaNegocio
+    {
+        Task<List<Entidades.Pelicula>> listarPeliculas();
+        Task<Boolean> guardarPeliculas(Pelicula pelicula);
+        Task<Boolean> actualizarPeliculas(Pelicula pelicula);
+    }
+}
