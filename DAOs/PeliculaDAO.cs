@@ -63,28 +63,38 @@ public class PeliculaDAO : IPeliculaDAO
     {
         int result = 0;
         string sql = @"UPDATE prueba.pelicula 
-                   SET titulo = @Titulo, 
-                       director = @Director, 
-                       anio = @Anio, 
-                       Link = @Link 
-                       duracionHoras = @DuracionHoras
-                   WHERE id = @Id"; // Asegúrate de incluir una condición WHERE
+               SET titulo = @Titulo, 
+                   director = @Director, 
+                   anio = @Anio, 
+                   link = @Link, 
+                   duracionHoras = @DuracionHoras
+               WHERE idpelicula = @IdPelicula";
 
         try
         {
             using (var db = dbConnection())
             {
-                await db.OpenAsync(); // Abre la conexión asincrónicamente
-                result = await db.ExecuteAsync(sql, pelicula); // Usa Dapper
+                await db.OpenAsync();
+                result = await db.ExecuteAsync(sql, new
+                {
+                    pelicula.Titulo,
+                    pelicula.Director,
+                    pelicula.Anio,
+                    pelicula.Link,
+                    pelicula.DuracionHoras,
+                    IdPelicula = pelicula.IdPelicula 
+                });
+                return result > 0;
             }
-            return result > 0;
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error: " + ex.Message);
+            Console.WriteLine($"Error al actualizar: {ex.Message}");
             return false;
         }
     }
+
+
 }
 
 

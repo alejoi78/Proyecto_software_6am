@@ -5,7 +5,7 @@ namespace Proyecto_software_6am.Entidades;
 public class Usuario
 {
     [Key]  // Clave primaria
-    public int Id { get; set; }
+    public int IdUsuario { get; set; }
 
     [Required(ErrorMessage = "El nombre es obligatorio.")]
     [MaxLength(100, ErrorMessage = "El nombre no puede exceder 100 caracteres.")]
@@ -18,13 +18,10 @@ public class Usuario
 
     [Required(ErrorMessage = "La contraseña es obligatoria.")]
     [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
-    [DataType(DataType.Password)]  // Para enmascarar en vistas (no afecta la BD)
-    public string Contraseña { get; set; }
+    [DataType(DataType.Password)]
+    public string Contrasena { get; set; }
 
-    [Required]
-    [Column(TypeName = "varchar(20)")]  
-    public string Rol { get; set; } = "Usuario";  
+    public int IdRol { get; set; } = 2; // Valor por defecto
 
-    // Constructor vacío (requerido por EF Core)
     public Usuario() { }
 }

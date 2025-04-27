@@ -8,7 +8,9 @@ using MySql.Data.MySqlClient;
 using Proyecto_software_6am.Servicio;
 using Proyecto_software_6am.Servicio.Interfaces;
 using Proyecto_software_6am.Entidades;
-
+using System.Data;
+using System.Data.SqlClient; 
+using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,10 +38,14 @@ builder.Services.AddScoped<IPeliculaDAO, PeliculaDAO>();
 builder.Services.AddScoped<IPeliculaNegocio, PeliculaServicio>();
 builder.Services.AddScoped<ISerieDAO, SerieDAO>();
 builder.Services.AddScoped<ISerieNegocio, SerieNegocio>();
-builder.Services.AddSingleton(new MySQLConfiguration(builder.Configuration.GetConnectionString("MySqlConnection")));
+builder.Services.AddScoped<IUsuarioDAO, UsuarioDAO>();
+builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

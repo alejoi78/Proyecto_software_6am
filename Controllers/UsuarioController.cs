@@ -1,6 +1,126 @@
-﻿namespace Proyecto_software_6am.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_software_6am.Entidades;
+using Proyecto_software_6am.Servicio;
+using Proyecto_software_6am.Servicio.Interfaces;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Proyecto_software_6am.Controllers;
+
+[ApiController]
+[Route("usuarios")]
+public class UsuarioController : ControllerBase
 {
-    public class UsuarioController
+    private readonly IUsuarioNegocio _usuario;
+
+    public UsuarioController(IUsuarioNegocio usuario)
     {
+        _usuario = usuario;
+    }
+
+    [HttpGet]
+    [Route("listar")]
+    public async Task<IActionResult> listarUsuarios()
+    {
+        try
+        {
+            var usuarios = await _usuario.listarUsuarios();
+
+            // Debug: Mostrar datos obtenidos
+            Console.WriteLine($"Datos obtenidos: {JsonSerializer.Serialize(usuarios)}");
+
+            if (usuarios == null || !usuarios.Any())
+                return NotFound("No se encontraron usuarios");
+
+            return Ok(usuarios);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en GET /api/usuarios/listar: {ex.Message}");
+            return StatusCode(500, "Error al obtener los usuarios");
+        }
+    }
+
+    [HttpPost]
+    [Route("registrar")]
+    public async Task<IActionResult> Post([FromBody] Usuario usuario)
+    {
+        try
+        {
+            if (usuario == null)
+                return BadRequest("Datos de usuario inválidos");
+
+            if (string.IsNullOrEmpty(usuario.Nombre))
+                return BadRequest("El nombre es requerido");
+
+            if (string.IsNullOrEmpty(usuario.Correo))
+                return BadRequest("El correo es requerido");
+
+            if (string.IsNullOrEmpty(usuario.Contrasena))
+                return BadRequest("La contraseña es requerida");
+
+            Console.WriteLine($"Datos recibidos: {JsonSerializer.Serialize(usuario)}");
+
+            bool resultado = await _usuario.guardarUsuarios(usuario);
+
+            if (!resultado)
+            {
+                Console.WriteLine("Error: No se pudo guardar el usuario en la base de datos");
+                return StatusCode(500, "Error al registrar el usuario");
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Usuario registrado correctamente",
+                data = usuario
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en POST /api/usuarios/registrar: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
+
+    [HttpPut]
+    [Route("actualizar")]
+    public IActionResult actualizarUsuarios(Usuario usuario)
+    {
+        try
+        {
+            if (usuario == null)
+                return BadRequest("Datos de usuario inválidos");
+
+            if (usuario.IdUsuario <= 0)
+                return BadRequest("ID de usuario inválido");
+
+            Console.WriteLine($"Datos recibidos para actualizar: {JsonSerializer.Serialize(usuario)}");
+
+            Task<bool> result = _usuario.actualizarUsuarios(usuario);
+            Console.WriteLine(" actualizado ");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en PUT /api/usuarios/actualizar: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
+
+    [HttpPost]
+    [Route("crearadmin")]
+    public async Task<IActionResult> CrearAdminPorDefecto()
+    {
+        try
+        {
+            await _usuario.CrearAdminPorDefecto();
+            return Ok(new { success = true, message = "Admin por defecto verificado/creado" });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en POST /api/usuarios/crear-admin: {ex.Message}");
+            return StatusCode(500, "Error al crear admin por defecto");
+        }
     }
 }

@@ -4,8 +4,7 @@ namespace Proyecto_software_6am.Entidades
 {
     public abstract class Contenido
     {
-        [Key]
-        public int Idcontenido { get; set; }
+        
 
         //[Required]
         // [MaxLength(200)]
