@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Proyecto_software_6am.Entidades;
 public class Usuario
@@ -21,7 +22,8 @@ public class Usuario
     [DataType(DataType.Password)]
     public string Contrasena { get; set; }
 
-    public int IdRol { get; set; } = 2; // Valor por defecto
+    [JsonIgnore] // Para ignorar si viene en el JSON
+    public int IdRol { get; set; } = 2;
 
     public Usuario() { }
 }

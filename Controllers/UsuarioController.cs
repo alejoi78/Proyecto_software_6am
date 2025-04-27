@@ -47,6 +47,7 @@ public class UsuarioController : ControllerBase
     {
         try
         {
+            // Validaciones básicas
             if (usuario == null)
                 return BadRequest("Datos de usuario inválidos");
 
@@ -59,26 +60,27 @@ public class UsuarioController : ControllerBase
             if (string.IsNullOrEmpty(usuario.Contrasena))
                 return BadRequest("La contraseña es requerida");
 
-            Console.WriteLine($"Datos recibidos: {JsonSerializer.Serialize(usuario)}");
+            // Hashear la contraseña y asignar rol por defecto
+            usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(usuario.Contrasena);
+            usuario.IdRol = 2; // Rol de usuario normal
+
+            Console.WriteLine($"Datos a guardar: {JsonSerializer.Serialize(usuario)}");
 
             bool resultado = await _usuario.guardarUsuarios(usuario);
 
             if (!resultado)
-            {
-                Console.WriteLine("Error: No se pudo guardar el usuario en la base de datos");
                 return StatusCode(500, "Error al registrar el usuario");
-            }
 
             return Ok(new
             {
                 success = true,
                 message = "Usuario registrado correctamente",
-                data = usuario
+                data = new { usuario.Nombre, usuario.Correo }
             });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error en POST /api/usuarios/registrar: {ex.Message}");
+            Console.WriteLine($"Error en registro: {ex.Message}");
             return StatusCode(500, "Error interno del servidor");
         }
     }

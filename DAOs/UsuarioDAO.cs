@@ -7,10 +7,9 @@ using MySql.Data.MySqlClient;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using Org.BouncyCastle.Crypto.Generators;
+using BCrypt.Net;
 
-//mirar como encrpitar
-    public class UsuarioDAO : IUsuarioDAO
+public class UsuarioDAO : IUsuarioDAO
     {
     private readonly MySQLConfiguration _connectionString;
 
@@ -44,11 +43,9 @@ using Org.BouncyCastle.Crypto.Generators;
 
     public async Task<bool> guardarUsuarios(Usuario usuario)
     {
-        
         if (usuario == null)
             throw new ArgumentNullException(nameof(usuario));
 
-        
         if (string.IsNullOrWhiteSpace(usuario.Nombre))
             throw new ArgumentException("El nombre es requerido");
 
@@ -58,13 +55,14 @@ using Org.BouncyCastle.Crypto.Generators;
         if (string.IsNullOrWhiteSpace(usuario.Contrasena))
             throw new ArgumentException("La contraseña es requerida");
 
-        
-        usuario.IdRol = usuario.IdRol == 0 ? 2 : usuario.IdRol; 
+        // Hashear la contraseña antes de almacenarla
+        string hashedPassword = BCrypt.HashPassword(usuario.Contrasena);
+
+        // FORZAR IdRol = 2 (usuario normal) sin importar lo que venga en el JSON
+        usuario.IdRol = 2;
 
         using (var db = dbConnection())
         {
-            usuario.IdRol = 2;
-
             await db.OpenAsync();
 
             string sql = @"INSERT INTO prueba.usuario
@@ -75,8 +73,8 @@ using Org.BouncyCastle.Crypto.Generators;
             {
                 usuario.Nombre,
                 usuario.Correo,
-                usuario.Contrasena, 
-                usuario.IdRol
+                Contrasena = hashedPassword,
+                IdRol = 2 // Aseguramos que siempre sea 2
             });
 
             return result > 0;
@@ -91,7 +89,7 @@ using Org.BouncyCastle.Crypto.Generators;
 
             // Verificar si ya existe un admin (USANDO EL NOMBRE CORRECTO DE COLUMNA)
             var existeAdmin = await db.ExecuteScalarAsync<bool>(
-                "SELECT 1 FROM prueba.usuario WHERE idRol = 1 LIMIT 1"); 
+                "SELECT 1 FROM prueba.usuario WHERE idRol = 1 LIMIT 1");
 
             if (!existeAdmin)
             {
@@ -104,13 +102,14 @@ using Org.BouncyCastle.Crypto.Generators;
                     {
                         Nombre = "Administrador",
                         Correo = "admin@example.com",
-                        Contrasena = "Admin123"
+                        Contrasena = BCrypt.HashPassword("Admin123")
                     });
 
-                Console.WriteLine("Usuario admin creado exitosamente");
+                    Console.WriteLine("Usuario admin creado exitosamente");
+                }
             }
-        }
-    }
+        } 
+    
 
     public async Task<bool> actualizarUsuarios(Usuario usuario)
         {
