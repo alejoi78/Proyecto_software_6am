@@ -9,7 +9,7 @@ using Proyecto_software_6am.Servicio;
 using Proyecto_software_6am.Servicio.Interfaces;
 using Proyecto_software_6am.Entidades;
 using System.Data;
-using System.Data.SqlClient; 
+using System.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 
 
