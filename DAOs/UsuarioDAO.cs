@@ -25,7 +25,7 @@ public class UsuarioDAO : IUsuarioDAO
     public async Task<List<Entidades.Usuario>> listarUsuarios()
         {
             List<Usuario> result = new List<Usuario>();
-            string sql = " SELECT idUsuario,Nombre, Correo, Rol FROM prueba.usuario ";
+            string sql = " SELECT idUsuario,Nombre, Correo, idRol FROM prueba.usuario ";
             try
             {
                 var db = dbConnection();
