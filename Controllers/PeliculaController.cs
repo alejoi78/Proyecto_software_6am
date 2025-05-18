@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio;
 using Proyecto_software_6am.Servicio.Interfaces;

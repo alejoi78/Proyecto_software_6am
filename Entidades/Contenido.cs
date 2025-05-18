@@ -5,20 +5,20 @@ namespace Proyecto_software_6am.Entidades
     public abstract class Contenido
     {
         
-
-        //[Required]
-        // [MaxLength(200)]
+      
         public string Titulo { get; set; }
-
-        // [Required]
-        //  [MaxLength(100)]
+        
         public string Director { get; set; }
-        //
+        
         [Range(1900, 2100)]
         public int Anio { get; set; }
 
-        // [Url]
         public string Link { get; set; }
+        public string Genero { get; set; }
+
+
+        [Range(1, 5, ErrorMessage = "La calificación debe estar entre 1 y 5")]
+        public double Calificacion { get; set; }
 
         public Contenido() { }
     }

@@ -24,6 +24,18 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTodo", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddControllers();
+
 // Configura Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Requiere el paquete Swashbuckle.AspNetCore
@@ -45,6 +57,8 @@ builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 
+// Usa la política CORS antes de `UseAuthorization`
+app.UseCors("PermitirTodo");
 
 if (app.Environment.IsDevelopment())
 {

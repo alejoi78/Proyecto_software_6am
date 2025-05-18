@@ -1,15 +1,10 @@
-CREATE DATABASE  IF NOT EXISTS `prueba` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `prueba` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `prueba`;
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
---
--- Host: localhost    Database: prueba
--- ------------------------------------------------------
--- Server version	8.0.39
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -17,123 +12,116 @@ USE `prueba`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `pelicula`
---
+-- --------------------------------------------------------
+-- Estructura de tabla para `pelicula`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `pelicula`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pelicula` (
   `idPelicula` int NOT NULL AUTO_INCREMENT,
-  `Titulo` varchar(45) DEFAULT NULL,
+  `Titulo` varchar(45) NOT NULL,
   `Director` varchar(45) DEFAULT NULL,
   `Anio` int DEFAULT NULL,
-  `Link` varchar(45) DEFAULT NULL,
+  `Link` varchar(255) DEFAULT NULL,
   `DuracionHoras` double DEFAULT NULL,
-  PRIMARY KEY (`idPelicula`)
+  `Genero` varchar(45) DEFAULT NULL,
+  `Calificacion` double DEFAULT 0,
+  PRIMARY KEY (`idPelicula`),
+  CONSTRAINT `chk_calificacion` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `pelicula`
---
+-- --------------------------------------------------------
+-- Datos para la tabla `pelicula`
+-- --------------------------------------------------------
 
 LOCK TABLES `pelicula` WRITE;
-/*!40000 ALTER TABLE `pelicula` DISABLE KEYS */;
-INSERT INTO `pelicula` VALUES (1,'sggg','string',2100,'string',24);
-/*!40000 ALTER TABLE `pelicula` ENABLE KEYS */;
+INSERT INTO `pelicula` VALUES 
+(1,'El Padrino','Francis Ford Coppola',1972,'https://ejemplo.com/padrino',2.5,'Drama',9.2),
+(2,'Interstellar','Christopher Nolan',2014,'https://ejemplo.com/interstellar',2.49,'Ciencia ficción',8.6);
 UNLOCK TABLES;
 
---
--- Table structure for table `rol`
---
+-- --------------------------------------------------------
+-- Estructura de tabla para `rol`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `rol`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rol` (
   `idRol` int NOT NULL AUTO_INCREMENT,
-  `TipoRol` varchar(45) DEFAULT NULL,
+  `TipoRol` varchar(45) NOT NULL,
   PRIMARY KEY (`idRol`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `rol`
---
+-- --------------------------------------------------------
+-- Datos para la tabla `rol`
+-- --------------------------------------------------------
 
 LOCK TABLES `rol` WRITE;
-/*!40000 ALTER TABLE `rol` DISABLE KEYS */;
-INSERT INTO `rol` VALUES (1,'Admin'),(2,'Usuario');
-/*!40000 ALTER TABLE `rol` ENABLE KEYS */;
+INSERT INTO `rol` VALUES 
+(1,'Admin'),
+(2,'Usuario');
 UNLOCK TABLES;
 
---
--- Table structure for table `serie`
---
+-- --------------------------------------------------------
+-- Estructura de tabla para `serie`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `serie`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `serie` (
   `idserie` int NOT NULL AUTO_INCREMENT,
-  `Titulo` varchar(45) DEFAULT NULL,
+  `Titulo` varchar(45) NOT NULL,
   `Director` varchar(45) DEFAULT NULL,
   `Anio` int DEFAULT NULL,
-  `Link` varchar(45) DEFAULT NULL,
-  `Temporadas` int DEFAULT NULL,
+  `Link` varchar(255) DEFAULT NULL,
+  `Temporadas` int DEFAULT 1,
   `DuracionPorCapitulo` double DEFAULT NULL,
-  PRIMARY KEY (`idserie`)
+  `Genero` varchar(45) DEFAULT NULL,
+  `Calificacion` double DEFAULT 0,
+  PRIMARY KEY (`idserie`),
+  CONSTRAINT `chk_calificacion_serie` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `serie`
---
+-- --------------------------------------------------------
+-- Datos para la tabla `serie`
+-- --------------------------------------------------------
 
 LOCK TABLES `serie` WRITE;
-/*!40000 ALTER TABLE `serie` DISABLE KEYS */;
-INSERT INTO `serie` VALUES (1,'string','string',2100,'string',30,4);
-/*!40000 ALTER TABLE `serie` ENABLE KEYS */;
+INSERT INTO `serie` VALUES 
+(1,'Breaking Bad','Vince Gilligan',2008,'https://ejemplo.com/breakingbad',5,47,'Drama',9.5),
+(2,'Stranger Things','The Duffer Brothers',2016,'https://ejemplo.com/strangerthings',4,50,'Ciencia ficción',8.7);
 UNLOCK TABLES;
 
---
--- Table structure for table `usuario`
---
+-- --------------------------------------------------------
+-- Estructura de tabla para `usuario`
+-- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `usuario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `idusuario` int NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(45) DEFAULT NULL,
-  `Correo` varchar(45) DEFAULT NULL,
-  `Contrasena` varchar(100) DEFAULT NULL,
+  `Nombre` varchar(45) NOT NULL,
+  `Correo` varchar(45) NOT NULL,
+  `Contrasena` varchar(100) NOT NULL,
   `idRol` int NOT NULL DEFAULT '2' COMMENT '1=admin, 2=usuario',
-  PRIMARY KEY (`idusuario`)
+  PRIMARY KEY (`idusuario`),
+  UNIQUE KEY `Correo_UNIQUE` (`Correo`),
+  KEY `fk_usuario_rol_idx` (`idRol`),
+  CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`idRol`) REFERENCES `rol` (`idRol`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `usuario`
---
+-- --------------------------------------------------------
+-- Datos para la tabla `usuario`
+-- --------------------------------------------------------
 
 LOCK TABLES `usuario` WRITE;
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (3,'Administrador','admin@example.com','Admin123',1),(4,'string','user@example.com','stringst',2);
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+INSERT INTO `usuario` VALUES 
+(3,'Administrador','admin@example.com','$2a$10$xJwL5vYb5UvD7hB6U7zZf.9v8TC5W5NZy7wqk9Q7d3bJ1cXrV6XaO',1),
+(4,'Usuario Normal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
 UNLOCK TABLES;
 
---
--- Dumping events for database 'prueba'
---
+-- --------------------------------------------------------
+-- Restaurar configuraciones
+-- --------------------------------------------------------
 
---
--- Dumping routines for database 'prueba'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -141,5 +129,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-05-03 17:52:50
