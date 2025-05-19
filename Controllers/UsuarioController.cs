@@ -60,8 +60,6 @@ public class UsuarioController : ControllerBase
             if (string.IsNullOrEmpty(usuario.Contrasena))
                 return BadRequest("La contraseña es requerida");
 
-            // Hashear la contraseña y asignar rol por defecto
-            usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(usuario.Contrasena);
             usuario.IdRol = 2; // Rol de usuario normal
 
             Console.WriteLine($"Datos a guardar: {JsonSerializer.Serialize(usuario)}");
@@ -87,30 +85,36 @@ public class UsuarioController : ControllerBase
 
     [HttpPut]
     [Route("actualizar")]
-    public IActionResult actualizarUsuarios(Usuario usuario)
+    public async Task<IActionResult> actualizarUsuarios(Usuario usuario)
     {
         try
         {
             if (usuario == null)
-                return BadRequest("Datos de usuario inválidos");
+                return BadRequest("Datos inválidos");
 
             if (usuario.IdUsuario <= 0)
                 return BadRequest("ID de usuario inválido");
 
-            Console.WriteLine($"Datos recibidos para actualizar: {JsonSerializer.Serialize(usuario)}");
+            Console.WriteLine($"Datos recibidos: {JsonSerializer.Serialize(usuario)}");
 
-            Task<bool> result = _usuario.actualizarUsuarios(usuario);
-            Console.WriteLine(" actualizado ");
-            return Ok();
+            bool resultado = await _usuario.actualizarUsuarios(usuario);
+
+            if (!resultado)
+            {
+                Console.WriteLine(" No se pudo actualizar: Correo en uso por otro usuario.");
+                return BadRequest("El correo ya está registrado por otro usuario.");
+            }
+
+            return Ok("Usuario actualizado correctamente.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error en PUT /api/usuarios/actualizar: {ex.Message}");
-            return StatusCode(500, "Error interno del servidor");
+            Console.WriteLine($"❌ Error en actualización: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor.");
         }
     }
 
-   
+
 
     [HttpPost]
     [Route("autenticar")]

@@ -113,8 +113,8 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 INSERT INTO `usuario` VALUES 
-(3,'Administrador','admin@example.com','$2a$10$xJwL5vYb5UvD7hB6U7zZf.9v8TC5W5NZy7wqk9Q7d3bJ1cXrV6XaO',1),
-(4,'Usuario Normal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
+(1,'Administrador','admin@example.com','$2a$10$xJwL5vYb5UvD7hB6U7zZf.9v8TC5W5NZy7wqk9Q7d3bJ1cXrV6XaO',1),
+(2,'Usuario Normal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
 UNLOCK TABLES;
 
 -- --------------------------------------------------------

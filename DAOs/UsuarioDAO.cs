@@ -50,42 +50,45 @@ public class UsuarioDAO : IUsuarioDAO
         if (usuario == null)
             throw new ArgumentNullException(nameof(usuario));
 
-        if (string.IsNullOrWhiteSpace(usuario.Nombre))
-            throw new ArgumentException("El nombre es requerido");
 
-        if (string.IsNullOrWhiteSpace(usuario.Correo))
-            throw new ArgumentException("El correo es requerido");
-
-        if (string.IsNullOrWhiteSpace(usuario.Contrasena))
-            throw new ArgumentException("La contraseña es requerida");
-
-        // Hashear la contraseña antes de almacenarla
+        // Hashear la contraseña
         string hashedPassword = BCrypt.HashPassword(usuario.Contrasena);
-
-        // FORZAR IdRol = 2 (usuario normal) sin importar lo que venga en el JSON
-        usuario.IdRol = 2;
+        usuario.IdRol = 2; // Rol por defecto
 
         using (var db = dbConnection())
         {
             await db.OpenAsync();
 
-            string sql = @"INSERT INTO prueba.usuario
-                     (nombre, correo, contrasena, idRol)
-                     VALUES (@Nombre, @Correo, @Contrasena, @IdRol)";
+            // 1. Verificar si el correo ya existe
+            var correoExistente = await db.ExecuteScalarAsync<bool>(
+                "SELECT 1 FROM prueba.usuario WHERE correo = @Correo",
+                new { usuario.Correo }
+            );
+
+            if (correoExistente)
+            {
+                Console.WriteLine("⚠️ Error al registrar: El correo ya existe."); 
+                throw new ArgumentException("El correo ya está registrado."); 
+            }
+
+     
+            string sql = @"INSERT INTO prueba.usuario 
+                      (nombre, correo, contrasena, idRol) 
+                      VALUES (@Nombre, @Correo, @Contrasena, @IdRol)";
 
             int result = await db.ExecuteAsync(sql, new
             {
                 usuario.Nombre,
                 usuario.Correo,
                 Contrasena = hashedPassword,
-                IdRol = 2 // Aseguramos que siempre sea 2
+                IdRol = 2
             });
 
             return result > 0;
         }
     }
 
-  
+
 
     public async Task<object> Autenticar(Usuario usuario)
     {
@@ -165,35 +168,55 @@ public class UsuarioDAO : IUsuarioDAO
 
     public async Task<bool> actualizarUsuarios(Usuario usuario)
     {
-        int result = 0;
-        string sql = @"UPDATE usuario 
-       SET nombre = @Nombre, 
-           correo = @Correo, 
-           contrasena = @Contrasena, 
-           rol = @Rol
-       WHERE idUsuario = @IdUsuario";
-
         try
         {
             using (var db = dbConnection())
             {
                 await db.OpenAsync();
-                result = await db.ExecuteAsync(sql, new
+
+                // Verificar si el correo existe en OTRO usuario (no en el actual)
+                var correoPerteneceAOtroUsuario = await db.ExecuteScalarAsync<bool>(
+                    @"SELECT 1 FROM usuario 
+                  WHERE correo = @Correo AND idUsuario != @IdUsuario",
+                    new { usuario.Correo, usuario.IdUsuario }
+                );
+
+                if (correoPerteneceAOtroUsuario)
+                {
+                    Console.WriteLine(" Error: El correo ya está registrado por OTRO usuario.");
+                    return false; // No permitir actualización
+                }
+
+
+                if (!string.IsNullOrWhiteSpace(usuario.Contrasena))
+                {
+                    usuario.Contrasena = BCrypt.HashPassword(usuario.Contrasena);
+                    Console.WriteLine("Contraseña hasheada correctamente.");
+                }
+                string sql = @"UPDATE usuario 
+                           SET nombre = @Nombre, 
+                               correo = @Correo, 
+                               contrasena = @Contrasena, 
+                               idRol = @IdRol
+                           WHERE idUsuario = @IdUsuario";
+
+                int result = await db.ExecuteAsync(sql, new
                 {
                     usuario.Nombre,
                     usuario.Correo,
                     usuario.Contrasena,
                     usuario.IdRol,
-                    IdUsuario = usuario.IdUsuario
+                    usuario.IdUsuario
                 });
+
                 return result > 0;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error al actualizar usuario: {ex.Message}");
+            Console.WriteLine($" Error al actualizar usuario: {ex.Message}");
             return false;
         }
     }
-    }
+}
 
