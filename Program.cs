@@ -12,7 +12,6 @@ using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 
-
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
@@ -26,14 +25,27 @@ builder.Services.AddControllers()
 
 // Configura Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // Requiere el paquete Swashbuckle.AspNetCore
+builder.Services.AddSwaggerGen();
 
-// Configuración de MySQL (asegúrate de que la clase MySQLConfiguration exista)
+// Configuración de CORS (esto es lo que necesitas añadir)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorFrontend",
+        policy => policy.WithOrigins(
+                    "https://localhost:7133",  // URL de tu frontend Blazor (HTTPS)
+                    "http://localhost:5133",   // URL alternativa (HTTP)
+                    "https://localhost:5001",  // Posibles URLs adicionales
+                    "http://localhost:5000")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials());
+});
+
+// Configuración de MySQL
 var mySQLConfiguration = new MySQLConfiguration(builder.Configuration.GetConnectionString("MySqlConnection"));
-builder.Services.AddSingleton<MySQLConfiguration>(mySQLConfiguration); // Corregido: sintaxis de AddSingleton
+builder.Services.AddSingleton<MySQLConfiguration>(mySQLConfiguration);
 
 // Registra el DAO y servicios
-
 builder.Services.AddScoped<IPeliculaDAO, PeliculaDAO>();
 builder.Services.AddScoped<IPeliculaNegocio, PeliculaServicio>();
 builder.Services.AddScoped<ISerieDAO, SerieDAO>();
@@ -41,11 +53,9 @@ builder.Services.AddScoped<ISerieNegocio, SerieNegocio>();
 builder.Services.AddScoped<IUsuarioDAO, UsuarioDAO>();
 builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
 
-
 var app = builder.Build();
+
 // Configure the HTTP request pipeline.
-
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -54,16 +64,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Añade el middleware CORS (importante que esté en esta posición)
+app.UseCors("AllowBlazorFrontend");
+
 app.UseAuthorization();
 
 app.MapControllers();
-/*
-app.MapGet("/dbconexion", async ([FromServices] DAOsContext dbContext) =>
-{
-    dbContext.Database.EnsureCreated();
-    return Results.Ok("Base de datos en memoria: " + dbContext.Database.IsInMemory());
-
-});
-*/
 
 app.Run("http://localhost:5950");

@@ -8,6 +8,7 @@ namespace Proyecto_software_6am.DAOs.Interfaces
         Task<List<Entidades.Usuario>> listarUsuarios();
         Task<Boolean> guardarUsuarios(Usuario usuario);
         Task<Boolean> actualizarUsuarios(Usuario usuario);
+        Task<object> Autenticar(Usuario usuario);
         Task CrearAdminPorDefecto();
     }
 }
