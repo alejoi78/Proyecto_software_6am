@@ -23,7 +23,7 @@ public class PeliculaDAO : IPeliculaDAO
     public async Task<List<Entidades.Pelicula>> listarPeliculas()
     {
         List<Pelicula> result = new List<Pelicula>();
-        string sql = " SELECT idPelicula,Titulo, Director, Anio, Link, DuracionHoras  FROM prueba.pelicula ";
+        string sql = " SELECT idPelicula,Titulo, Director, Anio, Link, DuracionHoras, Genero, Calificacion  FROM prueba.pelicula ";
         try
         {
             var db = dbConnection();
@@ -42,11 +42,11 @@ public class PeliculaDAO : IPeliculaDAO
     public async Task<Boolean> guardarPeliculas(Pelicula pelicula)
     {
         int result = 0;
-        string sql = " insert into prueba.pelicula (titulo, director, anio, link, duracionHoras)  values (@Titulo, @Director, @Anio, @Link, @DuracionHoras) ";
+        string sql = " insert into prueba.pelicula (titulo, director, anio, link, duracionHoras,  genero, calificacion)  values (@Titulo, @Director, @Anio, @Link, @DuracionHoras,@Genero, @Calificacion) ";
         try
         {
             var db = dbConnection();
-            result = await db.ExecuteAsync(sql, new { pelicula.Titulo, pelicula.Director, pelicula.Anio, pelicula.Link, pelicula.DuracionHoras });
+            result = await db.ExecuteAsync(sql, new { pelicula.Titulo, pelicula.Director, pelicula.Anio, pelicula.Link, pelicula.DuracionHoras, pelicula.Genero, pelicula.Calificacion });
             return result > 0;
 
         }
@@ -68,6 +68,8 @@ public class PeliculaDAO : IPeliculaDAO
                    anio = @Anio, 
                    link = @Link, 
                    duracionHoras = @DuracionHoras
+                   genero= @Genero,
+                   calificacion= @Calificacion
                WHERE idpelicula = @IdPelicula";
 
         try
@@ -82,6 +84,8 @@ public class PeliculaDAO : IPeliculaDAO
                     pelicula.Anio,
                     pelicula.Link,
                     pelicula.DuracionHoras,
+                    pelicula.Genero,
+                    pelicula.Calificacion,
                     IdPelicula = pelicula.IdPelicula
                 });
                 return result > 0;

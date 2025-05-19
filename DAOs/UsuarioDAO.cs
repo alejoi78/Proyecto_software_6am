@@ -67,7 +67,7 @@ public class UsuarioDAO : IUsuarioDAO
 
             if (correoExistente)
             {
-                Console.WriteLine("⚠️ Error al registrar: El correo ya existe."); 
+                Console.WriteLine("⚠ Error al registrar: El correo ya existe."); 
                 throw new ArgumentException("El correo ya está registrado."); 
             }
 
@@ -97,18 +97,18 @@ public class UsuarioDAO : IUsuarioDAO
             using (var db = dbConnection())
             {
                 await db.OpenAsync();
-                Console.WriteLine($"Consultando usuario: {usuario.Nombre}");
+                Console.WriteLine($"Consultando usuario: {usuario.Correo}");
 
-                string sql = "SELECT * FROM prueba.usuario WHERE nombre = @Nombre LIMIT 1";
-                var usuarioDB = await db.QueryFirstOrDefaultAsync<Usuario>(sql, new { usuario.Nombre });
+                string sql = "SELECT * FROM prueba.usuario WHERE correo = @Correo LIMIT 1";
+                var usuarioDB = await db.QueryFirstOrDefaultAsync<Usuario>(sql, new { usuario.Correo});
 
                 Console.WriteLine($"Usuario encontrado: {(usuarioDB != null ? "Sí" : "No")}");
 
                 if (usuarioDB != null)
                 {
                     Console.WriteLine("Verificando contraseña...");
-                    bool passwordMatch = usuario.Contrasena == usuarioDB.Contrasena;
-                    Console.WriteLine($"Contraseña correcta: {passwordMatch}");
+                    bool passwordMatch = BCrypt.Verify(usuario.Contrasena, usuarioDB.Contrasena);
+                    Console.WriteLine($"Contraseña: {passwordMatch}");
 
                     if (passwordMatch)
                     {
@@ -153,11 +153,12 @@ public class UsuarioDAO : IUsuarioDAO
 
                 }
 
-                return new { exito = false, mensaje = "Usuario o contraseña incorrectos" };
+                return new { exito = false, mensaje = "Correo o contraseña incorrectos" };
             }
         }
         catch (Exception ex)
         {
+            
             Console.WriteLine($"Error en DAO de autenticación: {ex.Message}");
             Console.WriteLine($"StackTrace: {ex.StackTrace}");
             return new { exito = false, mensaje = $"Error en el servidor: {ex.Message}" };

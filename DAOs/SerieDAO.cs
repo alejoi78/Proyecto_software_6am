@@ -24,7 +24,7 @@ public class SerieDAO : ISerieDAO
     public async Task<List<Entidades.Serie>> listarSeries()
     {
         List<Serie> result = new List<Serie>();
-        string sql = " SELECT idserie,Titulo, Director, Anio, Link, Temporadas, DuracionPorCapitulo FROM prueba.serie ";
+        string sql = " SELECT idserie,Titulo, Director, Anio, Link, Temporadas, DuracionPorCapitulo, Genero, Calificacion FROM prueba.serie ";
         try
         {
             var db = dbConnection();
@@ -50,8 +50,8 @@ public class SerieDAO : ISerieDAO
                 try
                 {
                     string sql = @"INSERT INTO prueba.serie 
-                             (titulo, director, anio, link, temporadas, DuracionPorCapitulo) 
-                             VALUES (@Titulo, @Director, @Anio, @Link, @Temporadas, @DuracionPorCapitulo)";
+                             (titulo, director, anio, link, temporadas, DuracionPorCapitulo, genero, calificacion) 
+                             VALUES (@Titulo, @Director, @Anio, @Link, @Temporadas, @DuracionPorCapitulo, @Genero, @Calificacion)";
 
                     var parameters = new
                     {
@@ -60,7 +60,9 @@ public class SerieDAO : ISerieDAO
                         serie.Anio,
                         serie.Link,
                         serie.Temporadas,
-                        serie.DuracionPorCapitulo
+                        serie.DuracionPorCapitulo,
+                        serie.Genero,
+                        serie.Calificacion
                     };
 
                     Console.WriteLine($"Ejecutando SQL: {sql} con parámetros: {JsonSerializer.Serialize(parameters)}");
@@ -92,7 +94,9 @@ public class SerieDAO : ISerieDAO
                          anio = @Anio, 
                          link = @Link,
                          temporadas = @Temporadas,
-                         duracionPorCapitulo = @DuracionPorCapitulo
+                         duracionPorCapitulo = @DuracionPorCapitulo,
+                        genero= @Genero,
+                         calificacion= @Calificacion
                      WHERE idserie = @IdSerie";
 
         try
@@ -108,6 +112,8 @@ public class SerieDAO : ISerieDAO
                     serie.Link,
                     serie.Temporadas,
                     serie.DuracionPorCapitulo,
+                    serie.Genero,
+                    serie.Calificacion,
                     IdSerie = serie.IdSerie
                 });
                 return result > 0;

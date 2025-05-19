@@ -19,6 +19,8 @@ namespace Proyecto_software_6am.Entidades
 
         // [Url]
         public string Link { get; set; }
+        public string Genero { get; set; } = string.Empty;
+        public double Calificacion { get; set; }
 
         public Contenido() { }
     }

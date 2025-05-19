@@ -122,22 +122,18 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            // Validaciones básicas
-            if (usuario == null)
-                return BadRequest("Datos de usuario inválidos");
 
-            if (string.IsNullOrEmpty(usuario.Nombre))
-                return BadRequest("El nombre de usuario es requerido");
+            if (string.IsNullOrEmpty(usuario.Correo))
+                return BadRequest("El correo del usuario es requerido");
 
             if (string.IsNullOrEmpty(usuario.Contrasena))
                 return BadRequest("La contraseña es requerida");
 
-            Console.WriteLine($"Intentando autenticar usuario: {usuario.Nombre}");
+            Console.WriteLine($"Intentando autenticar usuario: {usuario.Correo}");
 
             // Llamada directa al servicio
             var resultado = await _usuario.Autenticar(usuario);
 
-            // Devolver el resultado tal cual viene del servicio
             return Ok(resultado);
         }
         catch (Exception ex)
