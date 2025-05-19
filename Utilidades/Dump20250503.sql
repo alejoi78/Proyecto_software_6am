@@ -103,8 +103,7 @@ CREATE TABLE `usuario` (
   `idRol` int NOT NULL DEFAULT '2' COMMENT '1=admin, 2=usuario',
   PRIMARY KEY (`idusuario`),
   UNIQUE KEY `Correo_UNIQUE` (`Correo`),
-  KEY `fk_usuario_rol_idx` (`idRol`),
-  CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`idRol`) REFERENCES `rol` (`idRol`)
+  KEY `fk_usuario_rol_idx` (`idRol`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

@@ -21,9 +21,9 @@ public class Usuario
     [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
     [DataType(DataType.Password)]
     public string Contrasena { get; set; }
+    public int IdRol { get; set; } 
 
-    [JsonIgnore] // Para ignorar si viene en el JSON
-    public int IdRol { get; set; } = 2;
+    //[JsonIgnore] // Para ignorar si viene en el JSON
 
     public Usuario() { }
 }

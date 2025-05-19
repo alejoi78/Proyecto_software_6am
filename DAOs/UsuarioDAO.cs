@@ -53,8 +53,7 @@ public class UsuarioDAO : IUsuarioDAO
 
         // Hashear la contraseña
         string hashedPassword = BCrypt.HashPassword(usuario.Contrasena);
-        usuario.IdRol = 2; // Rol por defecto
-
+        
         using (var db = dbConnection())
         {
             await db.OpenAsync();
@@ -81,7 +80,7 @@ public class UsuarioDAO : IUsuarioDAO
                 usuario.Nombre,
                 usuario.Correo,
                 Contrasena = hashedPassword,
-                IdRol = 2
+                usuario.IdRol
             });
 
             return result > 0;
@@ -176,13 +175,13 @@ public class UsuarioDAO : IUsuarioDAO
                 await db.OpenAsync();
 
                 // Verificar si el correo existe en OTRO usuario (no en el actual)
-                var correoPerteneceAOtroUsuario = await db.ExecuteScalarAsync<bool>(
-                    @"SELECT 1 FROM usuario 
-                  WHERE correo = @Correo AND idUsuario != @IdUsuario",
+                var correoPerteneceAOtroUsuario = await db.ExecuteAsync(
+                    @"SELECT count(*) FROM prueba.usuario 
+                  WHERE Correo = @Correo AND idUsuario <> @IdUsuario",
                     new { usuario.Correo, usuario.IdUsuario }
                 );
 
-                if (correoPerteneceAOtroUsuario)
+                if (correoPerteneceAOtroUsuario > 0)
                 {
                     Console.WriteLine(" Error: El correo ya está registrado por OTRO usuario.");
                     return false; // No permitir actualización

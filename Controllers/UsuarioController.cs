@@ -60,7 +60,6 @@ public class UsuarioController : ControllerBase
             if (string.IsNullOrEmpty(usuario.Contrasena))
                 return BadRequest("La contraseña es requerida");
 
-            usuario.IdRol = 2; // Rol de usuario normal
 
             Console.WriteLine($"Datos a guardar: {JsonSerializer.Serialize(usuario)}");
 
