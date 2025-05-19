@@ -1,6 +1,7 @@
 ﻿using Proyecto_software_6am.DAOs.Interfaces;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,11 +26,8 @@ namespace Proyecto_software_6am.Servicio
             // Validaciones básicas antes de guardar
             if (string.IsNullOrWhiteSpace(usuario.Correo))
                 throw new ArgumentException("El correo no puede estar vacío.");
-
             if (string.IsNullOrWhiteSpace(usuario.Contrasena))
                 throw new ArgumentException("La contraseña no puede estar vacía.");
-
-
             return await _usuarioDAO.guardarUsuarios(usuario);
         }
 
@@ -37,8 +35,17 @@ namespace Proyecto_software_6am.Servicio
         {
             if (usuario.IdUsuario <= 0)
                 throw new ArgumentException("ID de usuario inválido.");
-
             return await _usuarioDAO.actualizarUsuarios(usuario);
+        }
+
+        public async Task<object> Autenticar(Usuario usuario)
+        {
+            // Validaciones básicas antes de autenticar
+            if (string.IsNullOrWhiteSpace(usuario.Nombre))
+                throw new ArgumentException("El nombre de usuario no puede estar vacío.");
+            if (string.IsNullOrWhiteSpace(usuario.Contrasena))
+                throw new ArgumentException("La contraseña no puede estar vacía.");
+            return await _usuarioDAO.Autenticar(usuario);
         }
 
         // Nuevo método para inicialización del admin

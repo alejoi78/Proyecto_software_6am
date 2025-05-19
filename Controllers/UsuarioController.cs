@@ -125,4 +125,38 @@ public class UsuarioController : ControllerBase
             return StatusCode(500, "Error al crear admin por defecto");
         }
     }
+
+    [HttpPost]
+    [Route("autenticar")]
+    public async Task<IActionResult> Autenticar([FromBody] Usuario usuario)
+    {
+        try
+        {
+            // Validaciones básicas
+            if (usuario == null)
+                return BadRequest("Datos de usuario inválidos");
+
+            if (string.IsNullOrEmpty(usuario.Nombre))
+                return BadRequest("El nombre de usuario es requerido");
+
+            if (string.IsNullOrEmpty(usuario.Contrasena))
+                return BadRequest("La contraseña es requerida");
+
+            Console.WriteLine($"Intentando autenticar usuario: {usuario.Nombre}");
+
+            // Llamada directa al servicio
+            var resultado = await _usuario.Autenticar(usuario);
+
+            // Devolver el resultado tal cual viene del servicio
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en autenticación: {ex.Message}");
+            return StatusCode(500, new { exito = true, mensaje = ex.Message });
+        }
+    }
+
+
+
 }
