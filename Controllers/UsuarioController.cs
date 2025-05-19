@@ -110,21 +110,7 @@ public class UsuarioController : ControllerBase
         }
     }
 
-    [HttpPost]
-    [Route("crearadmin")]
-    public async Task<IActionResult> CrearAdminPorDefecto()
-    {
-        try
-        {
-            await _usuario.CrearAdminPorDefecto();
-            return Ok(new { success = true, message = "Admin por defecto verificado/creado" });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error en POST /api/usuarios/crear-admin: {ex.Message}");
-            return StatusCode(500, "Error al crear admin por defecto");
-        }
-    }
+   
 
     [HttpPost]
     [Route("autenticar")]

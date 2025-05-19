@@ -8,6 +8,6 @@ namespace Proyecto_software_6am.Servicio.Interfaces
         Task<Boolean> guardarUsuarios(Usuario usuario);
         Task<Boolean> actualizarUsuarios(Usuario usuario);
         Task<object> Autenticar(Usuario usuario);
-        Task CrearAdminPorDefecto();
+       
     }
 }

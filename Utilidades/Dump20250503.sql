@@ -36,8 +36,8 @@ CREATE TABLE `pelicula` (
 
 LOCK TABLES `pelicula` WRITE;
 INSERT INTO `pelicula` VALUES 
-(1,'El Padrino','Francis Ford Coppola',1972,'https://ejemplo.com/padrino',2.5,'Drama',9.2),
-(2,'Interstellar','Christopher Nolan',2014,'https://ejemplo.com/interstellar',2.49,'Ciencia ficción',8.6);
+(1,'El Padrino','Francis Ford Coppola',1972,'https://ejemplo.com/padrino',2.5,'Drama',4.2),
+(2,'Interstellar','Christopher Nolan',2014,'https://ejemplo.com/interstellar',2.49,'Ciencia ficción',3.6);
 UNLOCK TABLES;
 
 -- --------------------------------------------------------
@@ -86,8 +86,8 @@ CREATE TABLE `serie` (
 
 LOCK TABLES `serie` WRITE;
 INSERT INTO `serie` VALUES 
-(1,'Breaking Bad','Vince Gilligan',2008,'https://ejemplo.com/breakingbad',5,47,'Drama',9.5),
-(2,'Stranger Things','The Duffer Brothers',2016,'https://ejemplo.com/strangerthings',4,50,'Ciencia ficción',8.7);
+(1,'Breaking Bad','Vince Gilligan',2008,'https://ejemplo.com/breakingbad',5,47,'Drama',4.5),
+(2,'Stranger Things','The Duffer Brothers',2016,'https://ejemplo.com/strangerthings',4,50,'Ciencia ficción',4.7);
 UNLOCK TABLES;
 
 -- --------------------------------------------------------

@@ -85,34 +85,7 @@ public class UsuarioDAO : IUsuarioDAO
         }
     }
 
-    public async Task CrearAdminPorDefecto()
-    {
-        using (var db = dbConnection())
-        {
-            await db.OpenAsync();
-
-            // Verificar si ya existe un admin (USANDO EL NOMBRE CORRECTO DE COLUMNA)
-            var existeAdmin = await db.ExecuteScalarAsync<bool>(
-                "SELECT 1 FROM prueba.usuario WHERE idRol = 1 LIMIT 1");
-
-            if (!existeAdmin)
-            {
-                // Crear el admin por defecto
-                await db.ExecuteAsync(
-                    @"INSERT INTO prueba.usuario 
-                (nombre, correo, contrasena, idRol) 
-                VALUES (@Nombre, @Correo, @Contrasena, 1)",
-                    new
-                    {
-                        Nombre = "Administrador",
-                        Correo = "admin@example.com",
-                        Contrasena = BCrypt.HashPassword("Admin123")
-                    });
-
-                Console.WriteLine("Usuario admin creado exitosamente");
-            }
-        }
-    }
+  
 
     public async Task<object> Autenticar(Usuario usuario)
     {

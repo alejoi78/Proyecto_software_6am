@@ -47,11 +47,5 @@ namespace Proyecto_software_6am.Servicio
                 throw new ArgumentException("La contraseña no puede estar vacía.");
             return await _usuarioDAO.Autenticar(usuario);
         }
-
-        // Nuevo método para inicialización del admin
-        public async Task CrearAdminPorDefecto()
-        {
-            await _usuarioDAO.CrearAdminPorDefecto();
-        }
     }
 }
