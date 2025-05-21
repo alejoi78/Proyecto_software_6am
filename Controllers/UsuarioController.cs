@@ -142,6 +142,33 @@ public class UsuarioController : ControllerBase
         }
     }
 
+    [HttpDelete]
+    [Route("eliminar")]
+    public async Task<IActionResult> eliminarUsuarios(int id)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest("ID inválido");
 
+            Console.WriteLine($"Intentando eliminar usuario con ID: {id}");
+
+            bool eliminado = await _usuario.eliminarUsuarios(id);
+
+            if (!eliminado)
+                return NotFound("No se encontró el usuario o no se pudo eliminar");
+
+            return Ok(new
+            {
+                success = true,
+                message = "Usuario eliminada correctamente"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al eliminar usuario: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
 
 }

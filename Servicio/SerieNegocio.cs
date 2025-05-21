@@ -1,4 +1,5 @@
-﻿using Proyecto_software_6am.DAOs.Interfaces;
+﻿using Proyecto_software_6am.DAOs;
+using Proyecto_software_6am.DAOs.Interfaces;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio.Interfaces;
 
@@ -28,6 +29,11 @@ namespace Proyecto_software_6am.Servicio
         {
             return await _serieDAO.actualizarSeries(serie);
         }
-    
+
+        public async Task<bool> eliminarSeries(int id)
+        {
+            return await _serieDAO.eliminarSeries(id);
+        }
+
     }
 }

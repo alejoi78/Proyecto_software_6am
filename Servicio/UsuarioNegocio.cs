@@ -1,4 +1,5 @@
-﻿using Proyecto_software_6am.DAOs.Interfaces;
+﻿using Proyecto_software_6am.DAOs;
+using Proyecto_software_6am.DAOs.Interfaces;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio.Interfaces;
 using System;
@@ -47,5 +48,11 @@ namespace Proyecto_software_6am.Servicio
                 throw new ArgumentException("La contraseña no puede estar vacía.");
             return await _usuarioDAO.Autenticar(usuario);
         }
+
+        public async Task<bool> eliminarUsuarios(int id)
+        {
+            return await _usuarioDAO.eliminarUsuarios(id);
+        }
+
     }
 }

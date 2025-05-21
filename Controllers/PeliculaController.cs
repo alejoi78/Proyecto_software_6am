@@ -44,5 +44,35 @@ namespace Proyecto_software_6am.Controllers;
         Console.WriteLine(" actualizado ");
         return Ok();
     }
+
+    [HttpDelete]
+    [Route("eliminar")]
+    public async Task<IActionResult> eliminarPelicula(int id)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest("ID inválido");
+
+            Console.WriteLine($"Intentando eliminar película con ID: {id}");
+
+            bool eliminado = await _pelicula.eliminarPeliculas(id);
+
+            if (!eliminado)
+                return NotFound("No se encontró la película o no se pudo eliminar");
+
+            return Ok(new
+            {
+                success = true,
+                message = "Película eliminada correctamente"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al eliminar película: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
+
 }
 

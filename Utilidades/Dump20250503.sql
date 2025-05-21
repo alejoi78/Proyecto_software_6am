@@ -26,6 +26,7 @@ CREATE TABLE `pelicula` (
   `DuracionHoras` double DEFAULT NULL,
   `Genero` varchar(45) DEFAULT NULL,
   `Calificacion` double DEFAULT 0,
+  `Imagen` varchar(75) DEFAULT NULL,
   PRIMARY KEY (`idPelicula`),
   CONSTRAINT `chk_calificacion` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -36,8 +37,11 @@ CREATE TABLE `pelicula` (
 
 LOCK TABLES `pelicula` WRITE;
 INSERT INTO `pelicula` VALUES 
-(1,'El Padrino','Francis Ford Coppola',1972,'https://ejemplo.com/padrino',2.5,'Drama',4.2),
-(2,'Interstellar','Christopher Nolan',2014,'https://ejemplo.com/interstellar',2.49,'Ciencia ficción',3.6);
+(1,'El Padrino','Francis Ford Coppola',1972,'https://myflixerz.to/watch-movie/the-godfather-19629.5297527',2.5,'Drama',4.2,'https://i.imgur.com/i7k6F3j.jpeg'),
+(2,'Interstellar','Christopher Nolan',2014,'https://myflixerz.to/watch-movie/interstellar-19788.5297302',2.49,'Ciencia ficción',3.6,'https://i.imgur.com/agFiKS5.jpeg'),
+(3, 'Avatar', 'James Cameron', 2009, 'https://myflixerz.to/watch-movie/avatar-19690.5297449', 2.69, 'Ciencia ficción', 4.1, 'https://i.imgur.com/wtJWExC.jpeg'),
+(4, 'El Caballero de la Noche', 'Christopher Nolan', 2008, 'https://myflixerz.to/watch-movie/the-dark-knight-19752.5297326', 2.79, 'Acción', 4.8, 'https://i.imgur.com/90opWBh.jpeg'),
+(5, 'Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 'https://myflixerz.to/watch-movie/the-matrix-19724.5349115', 2.29, 'Acción', 4.5, 'https://i.imgur.com/pymgzHB.jpeg');
 UNLOCK TABLES;
 
 -- --------------------------------------------------------
@@ -76,6 +80,7 @@ CREATE TABLE `serie` (
   `DuracionPorCapitulo` double DEFAULT NULL,
   `Genero` varchar(45) DEFAULT NULL,
   `Calificacion` double DEFAULT 0,
+  `Imagen` varchar(75) DEFAULT NULL,
   PRIMARY KEY (`idserie`),
   CONSTRAINT `chk_calificacion_serie` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -86,8 +91,11 @@ CREATE TABLE `serie` (
 
 LOCK TABLES `serie` WRITE;
 INSERT INTO `serie` VALUES 
-(1,'Breaking Bad','Vince Gilligan',2008,'https://ejemplo.com/breakingbad',5,47,'Drama',4.5),
-(2,'Stranger Things','The Duffer Brothers',2016,'https://ejemplo.com/strangerthings',4,50,'Ciencia ficción',4.7);
+(1,'Breaking Bad','Vince Gilligan',2008,'https://myflixerz.to/watch-tv/breaking-bad-39506.4858942',5,47,'Drama',4.5,'https://i.imgur.com/NoWb09t.jpegS'),
+(2,'Stranger Things','The Duffer Brothers',2016,'https://myflixerz.to/watch-tv/stranger-things-39444.4874236',4,50,'Ciencia ficción',4.7,'https://i.imgur.com/h2cWb01.jpeg'),
+(3,'Dark','Baran bo Odar, Jantje Friese',2017,'https://myflixerz.to/watch-tv/dark-38935.4970251',3,26,'Ciencia ficción',4.6,'https://i.imgur.com/k5irtvT.jpeg'),
+(4,'El Mandaloriano','Jon Favreau',2019,'https://myflixerz.to/watch-tv/the-mandalorian-32386.5252932',3,24,'Acción y aventura',4.4,'https://i.imgur.com/D6OMWTn.jpeg'),
+(5,'Juego De Tronos','David Benioff, D. B. Weiss',2011,'https://myflixerz.to/watch-tv/game-of-thrones-39539.4846588',8,73,'Fantasía',4.8,'https://i.imgur.com/WuHlz3T.jpeg');
 UNLOCK TABLES;
 
 -- --------------------------------------------------------
@@ -112,8 +120,8 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 INSERT INTO `usuario` VALUES 
-(1,'Administrador','admin@example.com','$2a$10$xJwL5vYb5UvD7hB6U7zZf.9v8TC5W5NZy7wqk9Q7d3bJ1cXrV6XaO',1),
-(2,'Usuario Normal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
+(1,'Administrador','admin@example.com','$2a$11$BbbrAzWRNqcWHtwPH78ViO6ngdkrxcRh67i1CEGHED9CZuHTy46SW',1),
+(2,'Usuarionormal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
 UNLOCK TABLES;
 
 -- --------------------------------------------------------

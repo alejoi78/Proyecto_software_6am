@@ -28,7 +28,7 @@ public class UsuarioDAO : IUsuarioDAO
 
     public async Task<List<Usuario>> listarUsuarios()
     {
-        string sql = "SELECT idUsuario, Nombre, Correo, idRol FROM prueba.usuario";
+        string sql = "SELECT * FROM prueba.usuario";
         try
         {
             using (var db = dbConnection())
@@ -47,43 +47,49 @@ public class UsuarioDAO : IUsuarioDAO
 
     public async Task<bool> guardarUsuarios(Usuario usuario)
     {
-        if (usuario == null)
-            throw new ArgumentNullException(nameof(usuario));
-
-
-        // Hashear la contraseña
-        string hashedPassword = BCrypt.HashPassword(usuario.Contrasena);
-        
         using (var db = dbConnection())
         {
             await db.OpenAsync();
 
-            // 1. Verificar si el correo ya existe
-            var correoExistente = await db.ExecuteScalarAsync<bool>(
-                "SELECT 1 FROM prueba.usuario WHERE correo = @Correo",
-                new { usuario.Correo }
-            );
-
-            if (correoExistente)
+            using (var transaction = await db.BeginTransactionAsync())
             {
-                Console.WriteLine("⚠ Error al registrar: El correo ya existe."); 
-                throw new ArgumentException("El correo ya está registrado."); 
+                try
+                {
+                    bool existeCorreo = await db.ExecuteScalarAsync<bool>(
+                        "SELECT COUNT(1) FROM prueba.usuario WHERE correo = @Correo",
+                        new { usuario.Correo },
+                        transaction);
+
+                    if (existeCorreo)
+                    {
+                        await transaction.RollbackAsync();
+                        throw new ArgumentException("El correo ya está registrado");
+                    }
+
+                    string hashedPassword = BCrypt.HashPassword(usuario.Contrasena);
+                    int result = await db.ExecuteAsync(
+                        @"INSERT INTO prueba.usuario (nombre, correo, contrasena, idRol) 
+                      VALUES (@Nombre, @Correo, @Contrasena, @IdRol)",
+                        new
+                        {
+                            usuario.Nombre,
+                            usuario.Correo,
+                            Contrasena = hashedPassword,
+                            usuario.IdRol
+                        },
+                        transaction);
+
+
+                    await transaction.CommitAsync();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Error en transacción: {ex.Message}");
+                    throw;
+                }
             }
-
-     
-            string sql = @"INSERT INTO prueba.usuario 
-                      (nombre, correo, contrasena, idRol) 
-                      VALUES (@Nombre, @Correo, @Contrasena, @IdRol)";
-
-            int result = await db.ExecuteAsync(sql, new
-            {
-                usuario.Nombre,
-                usuario.Correo,
-                Contrasena = hashedPassword,
-                usuario.IdRol
-            });
-
-            return result > 0;
         }
     }
 
@@ -215,6 +221,26 @@ public class UsuarioDAO : IUsuarioDAO
         catch (Exception ex)
         {
             Console.WriteLine($" Error al actualizar usuario: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> eliminarUsuarios(int id)
+    {
+        int result = 0;
+        string sql = "DELETE FROM prueba.usuario WHERE idusuario = @Idusuario";
+        try
+        {
+            using (var db = dbConnection())
+            {
+                await db.OpenAsync();
+                result = await db.ExecuteAsync(sql, new { idusuario = id });
+                return result > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error al eliminar: " + ex.Message);
             return false;
         }
     }

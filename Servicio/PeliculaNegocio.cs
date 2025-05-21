@@ -26,4 +26,9 @@ public class PeliculaServicio : IPeliculaNegocio
     {
         return await _peliculasDAO.actualizarPeliculas(pelicula);
     }
+
+    public async Task<bool> eliminarPeliculas(int id)
+    {
+        return await _peliculasDAO.eliminarPeliculas(id);
+    }
 }

@@ -23,40 +23,47 @@ public class PeliculaDAO : IPeliculaDAO
     public async Task<List<Entidades.Pelicula>> listarPeliculas()
     {
         List<Pelicula> result = new List<Pelicula>();
-        string sql = " SELECT idPelicula,Titulo, Director, Anio, Link, DuracionHoras, Genero, Calificacion  FROM prueba.pelicula ";
+        string sql = "SELECT * FROM prueba.pelicula";
         try
         {
             var db = dbConnection();
             IEnumerable<Pelicula> lista = await db.QueryAsync<Pelicula>(sql, new { });
-
-            return lista.ToList(); ;
+            return lista.ToList();
         }
         catch (Exception ex)
         {
-
             Console.WriteLine("Error " + ex.Message);
-        }
+        }   
         return result;
     }
 
     public async Task<Boolean> guardarPeliculas(Pelicula pelicula)
     {
         int result = 0;
-        string sql = " insert into prueba.pelicula (titulo, director, anio, link, duracionHoras,  genero, calificacion)  values (@Titulo, @Director, @Anio, @Link, @DuracionHoras,@Genero, @Calificacion) ";
+        string sql = @"INSERT INTO prueba.pelicula 
+                      (titulo, director, anio, link, duracionHoras, genero, calificacion, imagen)  
+                      VALUES (@Titulo, @Director, @Anio, @Link, @DuracionHoras, @Genero, @Calificacion, @Imagen)";
         try
         {
             var db = dbConnection();
-            result = await db.ExecuteAsync(sql, new { pelicula.Titulo, pelicula.Director, pelicula.Anio, pelicula.Link, pelicula.DuracionHoras, pelicula.Genero, pelicula.Calificacion });
+            result = await db.ExecuteAsync(sql, new
+            {
+                pelicula.Titulo,
+                pelicula.Director,
+                pelicula.Anio,
+                pelicula.Link,
+                pelicula.DuracionHoras,
+                pelicula.Genero,
+                pelicula.Calificacion,
+                pelicula.Imagen
+            });
             return result > 0;
-
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error " + ex.Message);
         }
-
         return result > 0;
-
     }
 
     public async Task<bool> actualizarPeliculas(Pelicula pelicula)
@@ -67,9 +74,10 @@ public class PeliculaDAO : IPeliculaDAO
                    director = @Director, 
                    anio = @Anio, 
                    link = @Link, 
-                   duracionHoras = @DuracionHoras
-                   genero= @Genero,
-                   calificacion= @Calificacion
+                   duracionHoras = @DuracionHoras,
+                   genero = @Genero,
+                   calificacion = @Calificacion,
+                   imagen = @Imagen
                WHERE idpelicula = @IdPelicula";
 
         try
@@ -86,6 +94,7 @@ public class PeliculaDAO : IPeliculaDAO
                     pelicula.DuracionHoras,
                     pelicula.Genero,
                     pelicula.Calificacion,
+                    pelicula.Imagen,
                     IdPelicula = pelicula.IdPelicula
                 });
                 return result > 0;
@@ -98,7 +107,23 @@ public class PeliculaDAO : IPeliculaDAO
         }
     }
 
-
+    public async Task<bool> eliminarPeliculas(int id)
+    {
+        int result = 0;
+        string sql = "DELETE FROM prueba.pelicula WHERE idPelicula = @IdPelicula";
+        try
+        {
+            using (var db = dbConnection())
+            {
+                await db.OpenAsync();
+                result = await db.ExecuteAsync(sql, new { IdPelicula = id });
+                return result > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error al eliminar: " + ex.Message);
+            return false;
+        }
+    }
 }
-
-

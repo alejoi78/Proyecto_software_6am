@@ -7,5 +7,6 @@ namespace Proyecto_software_6am.Servicio.Interfaces
         Task<List<Entidades.Serie>> listarSeries();
         Task<Boolean> guardarSeries(Serie serie);
         Task<Boolean> actualizarSeries(Serie serie);
+        Task<Boolean> eliminarSeries(int id);
     }
 }

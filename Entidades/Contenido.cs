@@ -22,6 +22,8 @@ namespace Proyecto_software_6am.Entidades
         public string Genero { get; set; } = string.Empty;
         public double Calificacion { get; set; }
 
+        public string Imagen { get; set; }
+
         public Contenido() { }
     }
 }
