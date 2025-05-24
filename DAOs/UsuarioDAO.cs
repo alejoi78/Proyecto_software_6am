@@ -28,7 +28,10 @@ public class UsuarioDAO : IUsuarioDAO
 
     public async Task<List<Usuario>> listarUsuarios()
     {
-        string sql = "SELECT * FROM prueba.usuario";
+        string sql = @"
+        SELECT u.*, r.TipoRol 
+        FROM prueba.usuario u
+        INNER JOIN prueba.rol r ON u.IdRol = r.IdRol";
         try
         {
             using (var db = dbConnection())

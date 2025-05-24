@@ -37,6 +37,33 @@ public class PeliculaDAO : IPeliculaDAO
         return result;
     }
 
+    public async Task<Pelicula> obtenerPorId(int id)
+    {
+        Pelicula pelicula = null;
+        string sql = "SELECT * FROM prueba.pelicula WHERE idpelicula = @IdPelicula";
+
+        try
+        {
+            using (var db = dbConnection())
+            {
+                await db.OpenAsync();
+
+                pelicula = await db.QueryFirstOrDefaultAsync<Pelicula>(sql, new { IdPelicula = id });
+
+                if (pelicula == null)
+                {
+                    Console.WriteLine($"No se encontró la película con ID: {id}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener película por ID: {ex.Message}");
+        }
+
+        return pelicula;
+    }
+
     public async Task<Boolean> guardarPeliculas(Pelicula pelicula)
     {
         int result = 0;

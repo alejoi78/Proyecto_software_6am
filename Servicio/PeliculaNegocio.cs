@@ -1,4 +1,5 @@
-﻿using Proyecto_software_6am.DAOs.Interfaces;
+﻿using Proyecto_software_6am.DAOs;
+using Proyecto_software_6am.DAOs.Interfaces;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio.Interfaces;
 
@@ -30,5 +31,10 @@ public class PeliculaServicio : IPeliculaNegocio
     public async Task<bool> eliminarPeliculas(int id)
     {
         return await _peliculasDAO.eliminarPeliculas(id);
+    }
+
+    public async Task<Pelicula> obtenerPorId(int id)
+    {
+        return await _peliculasDAO.obtenerPorId(id);
     }
 }

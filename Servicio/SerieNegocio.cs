@@ -35,5 +35,10 @@ namespace Proyecto_software_6am.Servicio
             return await _serieDAO.eliminarSeries(id);
         }
 
+        public async Task<Serie> obtenerPorId(int id)
+        {
+            return await _serieDAO.obtenerPorId(id);
+        }
+
     }
 }

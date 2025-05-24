@@ -8,8 +8,7 @@ namespace Proyecto_software_6am.Entidades
         public int IdSerie { get; set; }
         [Range(1, 30, ErrorMessage = "Las temporadas deben ser entre 1 y 30.")]
         public int Temporadas { get; set; }
-        public double DuracionPorCapitulo { get; set; } 
-
-
+        public double DuracionPorCapitulo { get; set; }
+        public string IdEpisodio { get; set; }
     }
 }

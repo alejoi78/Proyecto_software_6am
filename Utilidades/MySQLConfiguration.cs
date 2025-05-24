@@ -11,7 +11,16 @@ namespace Proyecto_software_6am.Utilidades
         public MySQLConfiguration(string connectionString)
         {
             _connectionString = connectionString;
-            ProbarConexionOCrearBD(); // Probar o crear BD al instanciar
+
+            if (!ProbarConexion())
+            {
+                Console.WriteLine("⚠️ No se pudo conectar. Intentando crear la base de datos...");
+                CrearBaseDeDatosYTablas();
+            }
+            else
+            {
+                Console.WriteLine("✅ Conexión exitosa a la base de datos.");
+            }
         }
 
         public MySqlConnection dbConnection()
@@ -19,21 +28,20 @@ namespace Proyecto_software_6am.Utilidades
             return new MySqlConnection(_connectionString);
         }
 
-        private void ProbarConexionOCrearBD()
+        private bool ProbarConexion()
         {
             try
             {
                 using (var conexion = dbConnection())
                 {
                     conexion.Open();
-                    Console.WriteLine("✅ Conexión exitosa a la base de datos.");
                     conexion.Close();
+                    return true;
                 }
             }
-            catch (MySqlException ex)
+            catch
             {
-                Console.WriteLine("⚠️ No se pudo conectar. Intentando crear la base de datos...");
-                CrearBaseDeDatosYTablas();
+                return false;
             }
         }
 
@@ -41,25 +49,27 @@ namespace Proyecto_software_6am.Utilidades
         {
             try
             {
-                // 1. Conexión sin especificar base de datos (conecta al servidor)
                 var builder = new MySqlConnectionStringBuilder(_connectionString)
                 {
-                    Database = "" // Eliminar base de datos para conectarse al servidor
+                    Database = "" // Nos conectamos al servidor, no a una base específica
                 };
 
                 using (var conexion = new MySqlConnection(builder.ToString()))
                 {
                     conexion.Open();
 
-                    // 2. Leer y ejecutar el archivo SQL
                     string script = File.ReadAllText("Utilidades/Dump20250503.sql");
                     var comandos = script.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
                     foreach (var comando in comandos)
                     {
-                        using (var cmd = new MySqlCommand(comando, conexion))
+                        string sql = comando.Trim();
+                        if (!string.IsNullOrWhiteSpace(sql))
                         {
-                            cmd.ExecuteNonQuery();
+                            using (var cmd = new MySqlCommand(sql, conexion))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
 
@@ -70,7 +80,6 @@ namespace Proyecto_software_6am.Utilidades
             {
                 Console.WriteLine("❌ Error al crear la base de datos:");
                 Console.WriteLine(ex.Message);
-
                 Console.WriteLine(ex.StackTrace);
             }
         }

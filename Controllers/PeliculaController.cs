@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto_software_6am.Entidades;
 using Proyecto_software_6am.Servicio;
 using Proyecto_software_6am.Servicio.Interfaces;
+using System.Text.Json;
 namespace Proyecto_software_6am.Controllers;
 
     [ApiController]
@@ -21,6 +22,34 @@ namespace Proyecto_software_6am.Controllers;
     public Task<List<Pelicula>> Get()
     {
         return _pelicula.listarPeliculas();
+    }
+
+    [HttpGet]
+    [Route("obtenerPorId")]
+    public async Task<IActionResult> obtenerPorId(int id)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest("ID inválido");
+
+            Console.WriteLine($"Buscando película con ID: {id}");
+
+            var pelicula = await _pelicula.obtenerPorId(id);
+
+            if (pelicula == null)
+                return NotFound($"No se encontró la película con ID: {id}");
+
+            // Debug: Mostrar datos obtenidos
+            Console.WriteLine($"Datos obtenidos: {JsonSerializer.Serialize(pelicula)}");
+
+            return Ok(pelicula);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al obtener película: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor al obtener la película");
+        }
     }
 
     [HttpPost]

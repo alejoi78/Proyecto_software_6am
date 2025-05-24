@@ -23,6 +23,7 @@ public class Usuario
     public string Contrasena { get; set; }
     public int IdRol { get; set; } 
 
+     public string TipoRol { get; set; }
     //[JsonIgnore] // Para ignorar si viene en el JSON
 
     public Usuario() { }

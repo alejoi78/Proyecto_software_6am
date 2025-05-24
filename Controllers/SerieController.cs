@@ -41,6 +41,34 @@ public class SerieController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("obtenerPorId")]
+    public async Task<IActionResult> obtenerPorId(int id)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest("ID inválido");
+
+            Console.WriteLine($"Buscando serie con ID: {id}");
+
+            var serie = await _serie.obtenerPorId(id);
+
+            if (serie == null)
+                return NotFound($"No se encontró la serie con ID: {id}");
+
+            // Debug: Mostrar datos obtenidos
+            Console.WriteLine($"Datos obtenidos: {JsonSerializer.Serialize(serie)}");
+
+            return Ok(serie);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al obtener serie: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor al obtener la serie");
+        }
+    }
+
     [HttpPost]
     [Route("nuevo")]
     public async Task<IActionResult> Post([FromBody] Serie serie)

@@ -8,5 +8,6 @@ namespace Proyecto_software_6am.DAOs.Interfaces
         Task<Boolean> guardarPeliculas(Pelicula pelicula);
         Task<Boolean> actualizarPeliculas(Pelicula pelicula);
         Task<Boolean> eliminarPeliculas(int id);
+        Task<Pelicula> obtenerPorId(int id);
     }
 }

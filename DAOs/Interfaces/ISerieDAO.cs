@@ -8,5 +8,7 @@ namespace Proyecto_software_6am.DAOs.Interfaces
         Task<Boolean> guardarSeries(Serie serie);
         Task<Boolean> actualizarSeries(Serie serie);
         Task<Boolean> eliminarSeries(int id);
+        Task<Serie> obtenerPorId(int id);
+
     }
 }

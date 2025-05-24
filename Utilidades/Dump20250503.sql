@@ -26,7 +26,7 @@ CREATE TABLE `pelicula` (
   `DuracionHoras` double DEFAULT NULL,
   `Genero` varchar(45) DEFAULT NULL,
   `Calificacion` double DEFAULT 0,
-  `Imagen` varchar(75) DEFAULT NULL,
+  `Imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idPelicula`),
   CONSTRAINT `chk_calificacion` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -80,7 +80,7 @@ CREATE TABLE `serie` (
   `DuracionPorCapitulo` double DEFAULT NULL,
   `Genero` varchar(45) DEFAULT NULL,
   `Calificacion` double DEFAULT 0,
-  `Imagen` varchar(75) DEFAULT NULL,
+  `Imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idserie`),
   CONSTRAINT `chk_calificacion_serie` CHECK ((`Calificacion` between 0 and 10))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

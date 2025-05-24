@@ -38,6 +38,34 @@ public class SerieDAO : ISerieDAO
         return result;
     }
 
+    public async Task<Serie> obtenerPorId(int id)
+    {
+        Serie serie = null;
+        string sql = "SELECT * FROM prueba.serie WHERE idserie = @IdSerie";
+
+        try
+        {
+            using (var db = dbConnection())
+            {
+                await db.OpenAsync();
+
+                // Usamos QueryFirstOrDefaultAsync para obtener un solo registro o null si no existe
+                serie = await db.QueryFirstOrDefaultAsync<Serie>(sql, new { IdSerie = id });
+
+                if (serie == null)
+                {
+                    Console.WriteLine($"No se encontró la serie con ID: {id}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener serie por ID: {ex.Message}");
+        }
+
+        return serie;
+    }
+
     public async Task<Boolean> guardarSeries(Serie serie)
     {
         using (var db = dbConnection())
