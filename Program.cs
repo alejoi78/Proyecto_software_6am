@@ -65,6 +65,8 @@ builder.Services.AddScoped<ISerieDAO, SerieDAO>();
 builder.Services.AddScoped<ISerieNegocio, SerieNegocio>();
 builder.Services.AddScoped<IUsuarioDAO, UsuarioDAO>();
 builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
+builder.Services.AddScoped<IEpisodioDAO, EpisodioDAO>(); // Registra el DAO
+builder.Services.AddScoped<IEpisodioNegocio, EpisodioNegocio>(); // Registra el servicio de negocio
 
 var app = builder.Build();
 

@@ -71,52 +71,95 @@ public class SerieController : ControllerBase
 
     [HttpPost]
     [Route("nuevo")]
-    public async Task<IActionResult> Post([FromBody] Serie serie)
+    public async Task<IActionResult> Create([FromBody] Serie serie)
     {
         try
         {
-            // Validación básica
-            if (serie == null)
-                return BadRequest("Datos de serie inválidos");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (string.IsNullOrEmpty(serie.Titulo))
-                return BadRequest("El título es requerido");
-
-            if (serie.DuracionPorCapitulo <= 0)
-                return BadRequest("La duración debe ser mayor que cero");
-
-            // Debug: Mostrar datos recibidos
-            Console.WriteLine($"Datos recibidos: {JsonSerializer.Serialize(serie)}");
+            // Validación manual adicional
+            if (serie.Episodios != null)
+            {
+                foreach (var episodio in serie.Episodios)
+                {
+                    episodio.IdSerie = 0; // Resetear el ID temporal
+                    episodio.Serie = null; // Asegurar que la propiedad Serie sea nula
+                }
+            }
 
             bool resultado = await _serie.guardarSeries(serie);
 
             if (!resultado)
             {
-                Console.WriteLine("Error: No se pudo guardar en la base de datos");
                 return StatusCode(500, "Error al guardar la serie");
             }
 
             return Ok(new
             {
                 success = true,
-                message = "Serie guardada correctamente",
+                message = "Serie creada exitosamente",
                 data = serie
             });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error en POST /series/nuevo: {ex.Message}");
-            return StatusCode(500, "Error interno del servidor");
+            return StatusCode(500, $"Error interno: {ex.Message}");
         }
     }
 
     [HttpPut]
     [Route("actualizar")]
-    public IActionResult actualizarSeries(Serie serie)
+    public async Task<IActionResult> actualizarSeries([FromBody] Serie serie)
     {
-        Task<bool> result = _serie.actualizarSeries(serie);
-        Console.WriteLine(" actualizado ");
-        return Ok();
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (serie.IdSerie <= 0)
+            {
+                return BadRequest("ID de serie inválido");
+            }
+
+            Console.WriteLine($"Actualizando serie ID: {serie.IdSerie}");
+
+            // Validación y preparación de episodios
+            if (serie.Episodios != null)
+            {
+                foreach (var episodio in serie.Episodios)
+                {
+                    episodio.IdSerie = serie.IdSerie; // Asignar el ID correcto
+                    episodio.Serie = null; // Evitar problemas de referencia circular
+                }
+            }
+
+            bool resultado = await _serie.actualizarSeries(serie);
+
+            if (!resultado)
+            {
+                return StatusCode(500, "Error al actualizar la serie");
+            }
+
+            // Obtener la serie actualizada para devolverla
+            var serieActualizada = await _serie.obtenerPorId(serie.IdSerie);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Serie actualizada exitosamente",
+                data = serieActualizada
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al actualizar serie: {ex.Message}");
+            return StatusCode(500, $"Error interno: {ex.Message}");
+        }
     }
 
     [HttpDelete]

@@ -37,11 +37,11 @@ CREATE TABLE `pelicula` (
 
 LOCK TABLES `pelicula` WRITE;
 INSERT INTO `pelicula` VALUES 
-(1,'El Padrino','Francis Ford Coppola',1972,'https://myflixerz.to/watch-movie/the-godfather-19629.5297527',2.5,'Drama',4.2,'https://i.imgur.com/i7k6F3j.jpeg'),
-(2,'Interstellar','Christopher Nolan',2014,'https://myflixerz.to/watch-movie/interstellar-19788.5297302',2.49,'Ciencia ficción',3.6,'https://i.imgur.com/agFiKS5.jpeg'),
-(3, 'Avatar', 'James Cameron', 2009, 'https://myflixerz.to/watch-movie/avatar-19690.5297449', 2.69, 'Ciencia ficción', 4.1, 'https://i.imgur.com/wtJWExC.jpeg'),
-(4, 'El Caballero de la Noche', 'Christopher Nolan', 2008, 'https://myflixerz.to/watch-movie/the-dark-knight-19752.5297326', 2.79, 'Acción', 4.8, 'https://i.imgur.com/90opWBh.jpeg'),
-(5, 'Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 'https://myflixerz.to/watch-movie/the-matrix-19724.5349115', 2.29, 'Acción', 4.5, 'https://i.imgur.com/pymgzHB.jpeg');
+(1,'El Padrino','Francis Ford Coppola',1972,'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4',2.5,'Drama',4.2,'https://i.imgur.com/i7k6F3j.jpeg'),
+(2,'Interstellar','Christopher Nolan',2014,'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4',2.49,'Ciencia ficción',3.6,'https://i.imgur.com/agFiKS5.jpeg'),
+(3, 'Avatar', 'James Cameron', 2009, 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 2.69, 'Ciencia ficción', 4.1, 'https://i.imgur.com/wtJWExC.jpeg'),
+(4, 'El Caballero de la Noche', 'Christopher Nolan', 2008, 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 2.79, 'Acción', 4.8, 'https://i.imgur.com/90opWBh.jpeg'),
+(5, 'Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 2.29, 'Acción', 4.5, 'https://i.imgur.com/pymgzHB.jpeg');
 UNLOCK TABLES;
 
 -- --------------------------------------------------------
@@ -83,7 +83,37 @@ CREATE TABLE `serie` (
   `Imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idserie`),
   CONSTRAINT `chk_calificacion_serie` CHECK ((`Calificacion` between 0 and 10))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+DROP TABLE IF EXISTS `episodio`;
+CREATE TABLE `episodio` (
+  `idEpisodio` int NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(100) NOT NULL,
+  `Temporada` varchar(10) NOT NULL,
+  `Link` varchar(255) NOT NULL,
+  `idSerie` int NOT NULL,
+  `DuracionMin` int DEFAULT NULL,
+  PRIMARY KEY (`idEpisodio`),
+  KEY `fk_episodio_serie_idx` (`idSerie`),
+  CONSTRAINT `fk_episodio_serie` 
+    FOREIGN KEY (`idSerie`) 
+    REFERENCES `serie` (`idserie`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Datos para la tabla `episodio`
+-- --------------------------------------------------------
+LOCK TABLES `episodio` WRITE;
+INSERT INTO `episodio` (`Nombre`, `Temporada`, `Link`, `idSerie`, `DuracionMin`) VALUES
+('Breaking Bad - Episodio 1', '1', 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 1, 47),
+('Stranger Things - Episodio 1', '1', 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 2, 50),
+('Dark - Episodio 1', '1', 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 3, 26),
+('El Mandaloriano - Episodio 1', '1', 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 4, 24),
+('Juego De Tronos - Episodio 1', '1', 'http://localhost:5050/uploads/InventarioEquipos/sdaiuhfsadiuohfoiasdhjfiojsdafiojsdoaifjdksmlfldjsaf.mp4', 5, 73);
+UNLOCK TABLES;
+
 
 -- --------------------------------------------------------
 -- Datos para la tabla `serie`
@@ -123,6 +153,28 @@ INSERT INTO `usuario` VALUES
 (1,'Administrador','admin@example.com','$2a$11$BbbrAzWRNqcWHtwPH78ViO6ngdkrxcRh67i1CEGHED9CZuHTy46SW',1),
 (2,'Usuarionormal','user@example.com','$2a$10$yH9eL3vR7fT8wU6vX5WzR.2s3D4F5G6H7J8K9L0M1N2O3P4Q5R6S7T',2);
 UNLOCK TABLES;
+
+-- Crear tabla pelicula_log
+CREATE TABLE IF NOT EXISTS `pelicula_log` (
+  `idLog` INT AUTO_INCREMENT PRIMARY KEY,
+  `idPelicula` INT,
+  `Titulo` VARCHAR(100),
+  `FechaInsertado` DATETIME
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Crear trigger
+DELIMITER //
+
+CREATE TRIGGER after_insert_pelicula
+AFTER INSERT ON pelicula
+FOR EACH ROW
+BEGIN
+  INSERT INTO pelicula_log (idPelicula, Titulo, FechaInsertado)
+  VALUES (NEW.idPelicula, NEW.Titulo, NOW());
+END;
+//
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 -- Restaurar configuraciones
